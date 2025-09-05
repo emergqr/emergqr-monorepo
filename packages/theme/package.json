@@ -1,0 +1,14 @@
+{
+  "name": "@emergqr/theme",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@emergqr/core": "workspace:*",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
+    "zustand": "^4.5.2"
+  }
+}

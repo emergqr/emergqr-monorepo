@@ -14,7 +14,7 @@ import Toast from 'react-native-toast-message'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useEmergencyDataStore } from '@/store/emergencyData/emergencyData.store'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import FormInput from '@/components/forms/FormInput'
 import DateTimePickerInput from '@/components/forms/DateTimePickerInput'
 import SelectInput, { Option } from '@/components/forms/SelectInput'

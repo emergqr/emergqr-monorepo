@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAddressStore } from '@/store/address/address.store'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import AddressListItem from '@/components/profile/AddressListItem'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
 

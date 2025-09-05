@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import Tooltip from 'react-native-walkthrough-tooltip'
-import { useTheme } from '@/contexts/ThemeContext'
+import { useTheme } from '@emergqr/theme'
 
 interface ScreenHeaderProps {
   title: string

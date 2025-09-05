@@ -18,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useProfileStore } from '@/store/profile/profile.store'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
 import api from '@/services/api'
 import GlobalLanguageSelector from '@/components/forms/GlobalLanguageSelector'

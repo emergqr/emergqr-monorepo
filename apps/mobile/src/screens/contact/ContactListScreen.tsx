@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useContactStore } from '@/store/contacts/contact.store'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import ContactListItem from '@/components/contacts/ContactListItem'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
 

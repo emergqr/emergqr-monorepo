@@ -1,4 +1,5 @@
-import { ThemeColors } from '../../../../packages/core/src/domain/interfaces/ThemeColors.interface'
+import { ThemeColors } from '@emergqr/core/src/domain/interfaces/ThemeColors.interface'
+
 /**
  * Paleta de colores comunes para evitar la repetición.
  */

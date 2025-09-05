@@ -18,7 +18,7 @@ import { useAllergyStore } from '@/store/allergy/allergy.store'
 import InfoCard from '@/components/InfoCard' // Cambiamos la importación
 import { AllergyRead } from '../../../../../packages/core/src/domain/interfaces/client/allergy.interface'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import { useTheme } from '@/contexts/ThemeContext'
 
 type AllergyListScreenNavigationProp = NativeStackNavigationProp<

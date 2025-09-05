@@ -1,22 +1,14 @@
 module.exports = {
-  // Esta es la configuración raíz de ESLint.
   root: true,
-
-  // El entorno por defecto es Node.js. Esto se aplicará a los archivos .js
-  // como este mismo, babel.config.js, jest.config.js, etc.
   env: {
-    node: true, // Defines globals for Node.js (e.g., module, require).
-    es2021: true, // Allows modern ECMAScript syntax.
+    node: true,
+    es2021: true,
   },
-
-  // Plugins y configuración base para todo el proyecto (archivos JS).
   extends: ['eslint:recommended', 'prettier'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': 'error', // Reports Prettier issues as ESLint errors.
+    'prettier/prettier': 'error',
   },
-
-  // Ignore patterns for the whole project.
   ignorePatterns: [
     'node_modules/',
     'dist/',
@@ -27,20 +19,24 @@ module.exports = {
     'apps/mobile/android/',
     '*.json',
   ],
-
-  // Overrides for specific file types.
   overrides: [
     {
-      // Configuration for TypeScript files (React Native app code).
-      files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts'],
-
-      // Environment and parser specific to TypeScript and React Native.
+      // Se ha añadido 'packages/**/*.tsx' para que la configuración se aplique
+      // correctamente a los componentes de React en nuestros paquetes de UI.
+      files: [
+        'apps/**/*.ts',
+        'apps/**/*.tsx',
+        'packages/**/*.ts',
+        'packages/**/*.tsx',
+      ],
       env: {
         'react-native/react-native': true,
         jest: true,
       },
       parser: '@typescript-eslint/parser',
       parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         ecmaFeatures: {
           jsx: true,
         },
@@ -54,12 +50,10 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        // Custom rules for our React Native code.
-        'react/prop-types': 'off', // We use TypeScript for type checking.
-        'react/react-in-jsx-scope': 'off', // Not needed with modern JSX transform.
-        'react-native/no-raw-text': 'off', // Can be too restrictive.
+        'react/prop-types': 'off',
+        'react/react-in-jsx-scope': 'off',
+        'react-native/no-raw-text': 'off',
         'prettier/prettier': 'error',
-        // Temporarily disabling style rules to allow the first commit.
         'react-native/no-unused-styles': 'off',
         'react-native/no-inline-styles': 'off',
         'react-native/no-color-literals': 'off',
