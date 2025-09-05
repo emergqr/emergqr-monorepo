@@ -6,7 +6,7 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native'
-import { useTheme } from '@/contexts/ThemeContext'
+import { useTheme } from '@emergqr/theme'
 
 interface CustomButtonProps {
   title: string

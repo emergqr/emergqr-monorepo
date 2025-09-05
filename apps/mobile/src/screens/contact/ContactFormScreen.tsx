@@ -18,10 +18,10 @@ import * as z from 'zod'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useContactStore } from '@/store/contacts/contact.store'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import FormInput from '@/components/forms/FormInput'
 import ChecklistItem from '@/components/forms/ChecklistItem'
-import CustomButton from '@/components/CustomButton'
+import { CustomButton } from '@emergqr/ui'
 import {
   ContactCreate,
   ContactUpdate,

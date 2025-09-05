@@ -6,9 +6,10 @@ import React, {
   useState,
 } from 'react'
 import { ActivityIndicator, View, StyleSheet, SafeAreaView } from 'react-native'
-import { useThemeStore } from '@/store/theme/theme.store'
-import { colors } from '@/constants/color'
-import { ThemeColors } from '../../../../packages/core/src/domain/interfaces/ThemeColors.interface'
+import { useThemeStore } from './theme.store'
+import { colors } from './colors'
+import { ThemeColors } from '@emergqr/core/src/domain/interfaces/ThemeColors.interface'
+
 interface ThemeContextType {
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void
@@ -30,7 +31,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isHydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    // Esperamos a que zustand nos confirme que ha terminado de cargar el estado
     const unsubscribe = useThemeStore.persist.onFinishHydration(() => {
       setHydrated(true)
     })
@@ -46,8 +46,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const themeColors = useMemo(() => colors[theme], [theme])
 
-  // Mientras el tema no se haya cargado, mostramos una pantalla de carga o nada.
-  // Esto evita el crash y la pantalla en blanco.
   if (!isHydrated) {
     return (
       <SafeAreaView style={styles.loadingContainer}>

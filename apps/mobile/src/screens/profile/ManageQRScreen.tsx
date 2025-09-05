@@ -20,7 +20,7 @@ import * as FileSystem from 'expo-file-system'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useQRStore } from '@/store/qr/qr.store'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 
 const ManageQRScreen = () => {
   const { t } = useTranslation()

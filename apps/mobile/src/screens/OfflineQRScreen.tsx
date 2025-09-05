@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import QRCode from 'react-native-qrcode-svg'
 import { useTheme } from '@/contexts/ThemeContext'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '@/navigation/AppNavigator'
 

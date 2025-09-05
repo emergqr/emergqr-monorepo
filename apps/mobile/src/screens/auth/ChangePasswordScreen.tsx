@@ -17,9 +17,7 @@ import * as z from 'zod'
 
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuthStore } from '@/store/auth/auth.store'
-import ScreenHeader from '@/components/ScreenHeader'
-import CustomTextInput from '@/components/CustomTextInput'
-import CustomButton from '@/components/CustomButton'
+import { ScreenHeader, CustomButton, CustomTextInput } from '@emergqr/ui'
 import { ChangePasswordDto } from '../../../../../packages/core/src/domain/interfaces/auth/change-password.dto'
 import { isValidPassword } from '@/utils/validators'
 

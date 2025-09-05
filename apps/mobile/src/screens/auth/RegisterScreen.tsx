@@ -20,12 +20,11 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useAuthStore } from '@/store/auth/auth.store'
-import CustomButton from '@/components/CustomButton'
+import { CustomButton, CustomTextInput } from '@emergqr/ui'
 import { useNetworkStore } from '@/store/network/network.store'
 import { AuthStackParamList } from '@/navigation/types'
 import AuthFormHeader from '@/components/AuthFormHeader'
 import { isValidPassword } from '@/utils/validators'
-import CustomTextInput from '@/components/CustomTextInput'
 
 const getThemedStyles = (
   themeColors: ReturnType<typeof useTheme>['themeColors'],

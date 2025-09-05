@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { StyleSheet } from 'react-native'
 import { TextInput, TextInputProps } from 'react-native-paper'
-import { useTheme } from '@/contexts/ThemeContext'
+// Se ha actualizado la importación para que apunte al nuevo paquete de tema.
+import { useTheme } from '@emergqr/theme'
 
 // The component now accepts all props from react-native-paper's TextInput
 const CustomTextInput: React.FC<TextInputProps> = ({

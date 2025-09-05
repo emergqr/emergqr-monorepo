@@ -16,8 +16,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { useAddressStore } from '@/store/address/address.store'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
 import ScreenHeader from '@/components/ScreenHeader'
-import CustomTextInput from '@/components/CustomTextInput'
-import CustomButton from '@/components/CustomButton'
+import { CustomButton, CustomTextInput } from '@emergqr/ui'
 import { AddressPayload } from '@/services/client/addressService'
 
 type AddressFormScreenRouteProp = RouteProp<

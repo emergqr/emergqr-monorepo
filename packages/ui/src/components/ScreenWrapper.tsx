@@ -1,7 +1,8 @@
 import React from 'react'
 import { ViewStyle } from 'react-native'
-import { useTheme } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
+// Se ha actualizado la importación para que apunte al nuevo paquete de tema.
+import { useTheme } from '@emergqr/theme'
 
 interface ScreenWrapperProps {
   children: React.ReactNode
@@ -9,10 +10,11 @@ interface ScreenWrapperProps {
 }
 
 const ScreenWrapper = ({ children, style }: ScreenWrapperProps) => {
-  const theme = useTheme()
+  // Se usa nuestro hook de tema personalizado para consistencia.
+  const { themeColors } = useTheme()
   const containerStyle = {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: themeColors.background,
   }
 
   return <SafeAreaView style={[containerStyle, style]}>{children}</SafeAreaView>

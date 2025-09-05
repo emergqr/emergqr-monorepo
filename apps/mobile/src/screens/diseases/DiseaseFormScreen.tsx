@@ -19,7 +19,7 @@ import Toast from 'react-native-toast-message'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useDiseaseStore } from '@/store/disease/disease.store'
 import { ProfileStackParamList } from '@/navigation/ProfileStackNavigator'
-import ScreenHeader from '@/components/ScreenHeader'
+import { ScreenHeader } from '@emergqr/ui'
 import {
   PatientDiseaseCreate,
   PatientDiseaseUpdate,

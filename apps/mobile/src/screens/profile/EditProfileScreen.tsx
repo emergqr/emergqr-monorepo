@@ -14,7 +14,7 @@ import Toast from 'react-native-toast-message'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useProfileStore } from '@/store/profile/profile.store'
 import ScreenHeader from '@/components/ScreenHeader'
-import CustomTextInput from '@/components/CustomTextInput'
+import { CustomTextInput } from '@emergqr/ui'
 import GlobalLanguageSelector from '@/components/forms/GlobalLanguageSelector'
 import { ClientUpdate } from '../../../../../packages/core/src/domain/interfaces/client/client-update.interface'
 
