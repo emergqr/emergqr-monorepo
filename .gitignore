@@ -1,0 +1,100 @@
+# ===================================================================
+# Dependencies
+# ===================================================================
+# Ignore all node_modules directories in the entire project.
+node_modules/
+# Lockfiles from other package managers.
+package-lock.json
+yarn.lock
+
+# ===================================================================
+# Build & Cache Artifacts
+# ===================================================================
+# General
+build/
+dist/
+coverage/
+
+# Next.js
+.next/
+out/
+
+# Expo
+.expo/
+
+# Metro Bundler
+.metro-cache/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ===================================================================
+# Mobile Specific (iOS & Android)
+# ===================================================================
+# iOS - Xcode
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace/
+.xcode.env.local
+
+# iOS - CocoaPods
+Pods/
+
+# Android
+.idea/
+.gradle/
+local.properties
+
+# ===================================================================
+# IDE & Editor Configs
+# ===================================================================
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# ===================================================================
+# OS & Temporary Files
+# ===================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# ===================================================================
+# Logs & Environment Files
+# ===================================================================
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local Environment Variables
+.env*.local
+.env.local
+.env
+
+# ===================================================================
+# Sensitive Files
+# ===================================================================
+*.pem

@@ -1,0 +1,372 @@
+{
+  "locale_code": "es",
+  "home": {
+    "welcome": "Bienvenido a EmergQR",
+    "toggleTheme": "Modo Oscuro",
+    "goToAuth": "Iniciar Sesión / Registrarse",
+    "signOut": "Cerrar Sesión"
+  },
+  "auth": {
+    "email": "Correo Electrónico",
+    "password": "Clave",
+    "repeatPassword": "Confirmar Clave"
+  },
+  "register": {
+    "title": "Crear Cuenta",
+    "emailPlaceholder": "Correo electrónico",
+    "passwordPlaceholder": "Contraseña",
+    "registerButton": "Registrar",
+    "passwordRepeatPlaceholder": "Repetir contraseña"
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "emailPlaceholder": "Ingresa tu correo",
+    "passwordPlaceholder": "Ingresa tu contraseña",
+    "loginButton": "Ingresar",
+    "noAccount": "¿No tienes cuenta? Regístrate",
+    "haveAccount": "Iniciar con Cuenta"
+  },
+  "errors": {
+    "validationTitle": "Error de  validación",
+    "loginFailed": "Error al iniciar sesión",
+    "registerFailed": "Error al registrar la cuenta",
+    "invalidEmail": "Por favor, ingresa un correo electrónico válido",
+    "weakPassword": "La contraseña debe tener entre 8 y 64 caracteres e incluir mayúsculas, minúsculas, números y un carácter especial",
+    "noConnection": "No se pudo conectar al servidor. Por favor, intenta más tarde.",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+    "genericTitle": "Ocurrió un Error",
+    "generic_fetch_error": "Hubo un error al obtener tus datos. Por favor, inténtalo de nuevo.",
+    "genericMessage": "No se pudo completar la operación. Por favor, inténtalo de nuevo.",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio.",
+      "phoneRequired": "El teléfono es obligatorio.",
+      "relationshipRequired": "El parentesco es obligatorio."
+    }
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido a tu Dashboard!",
+    "loggedInAs": "¡Hola, {{name}}!",
+    "logout": "Cerrar Sesión",
+    "menuTitle": "Menú",
+    "manageQR": "Gestionar mi QR",
+    "myProfile": "Mi Perfil"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "notProvided": "No proporcionado",
+    "changePassword": "Cambiar Contraseña",
+    "myAddresses": "Mis Direcciones",
+    "emergencyData": "Datos de Emergencia",
+    "emergencyContacts": "Contactos de Emergencia",
+    "diseases": "Enfermedades y Diagnósticos",
+    "allergies": "Alergias",
+    "treatments": "Medicamentos y Tratamientos",
+    "documents": "Imágenes y Documentos",
+    "reminders": "Recordatorios",
+    "permissionTitle": "Permiso Requerido",
+    "permissionMessage": "Necesitamos acceso a tu galería de fotos para cambiar tu foto de perfil.",
+    "vital-sign": "Signos Vitales",
+    "medicalData": "Datos Médicos",
+    "selectAvatarTitle": "Cambiar Foto de Perfil",
+    "selectAvatarMessage": "¿Cómo te gustaría seleccionar una nueva foto?",
+    "takePhoto": "Tomar Foto",
+    "chooseFromLibrary": "Elegir de la Biblioteca",
+    "cameraPermissionMessage": "Necesitamos acceso a tu cámara para tomar una foto."
+  },
+  "editProfile": {
+    "title": "Editar Perfil",
+    "nameLabel": "Nombre Completo",
+    "phoneLabel": "Número de Teléfono",
+    "birthDateLabel": "Fecha de Nacimiento",
+    "sexLabel": "Sexo",
+    "sexPlaceholder": "Ej: Femenino, Masculino, Otro",
+    "occupationLabel": "Ocupación",
+    "occupationPlaceholder": "Ej: Ingeniero de Software",
+    "languageLabel": "Idioma de la App",
+    "saveButton": "Guardar Cambios",
+    "successMessage": "¡Perfil actualizado con éxito!",
+    "errorMessage": "No se pudo actualizar el perfil. Por favor, inténtalo de nuevo."
+  },
+  "changePassword": {
+    "title": "Cambiar Contraseña",
+    "currentPasswordLabel": "Contraseña Actual",
+    "newPasswordLabel": "Nueva Contraseña",
+    "confirmPasswordLabel": "Confirmar Nueva Contraseña",
+    "saveButton": "Actualizar Contraseña",
+    "successMessage": "¡Contraseña actualizada con éxito!",
+    "errorMessage": "No se pudo actualizar la contraseña. Por favor, verifica tu contraseña actual e inténtalo de nuevo."
+  },
+  "tooltips": {
+    "editProfile": "Editar Perfil",
+    "changePassword": "Cambiar Contraseña",
+    "toggleTheme": "Cambiar Tema",
+    "saveChanges": "Guardar Cambios",
+    "deleteData": "Eliminar Datos"
+  },
+  "qr": {
+    "title": "Mi Código QR",
+    "loading": "Cargando tu código QR...",
+    "info": "Muestra este código al personal de emergencias para que accedan a tu información médica.",
+    "permissionDeniedTitle": "Permiso Denegado",
+    "permissionDeniedMessage": "Necesitamos acceso a tu galería para guardar el código QR.",
+    "downloadSuccessTitle": "¡Guardado!",
+    "downloadSuccessMessage": "El código QR se ha guardado en tu galería de fotos.",
+    "downloadErrorTitle": "Error al Descargar",
+    "downloadErrorMessage": "No se pudo guardar el código QR. Por favor, inténtalo de nuevo.",
+    "regenerateConfirmTitle": "Regenerar Código",
+    "regenerateConfirmMessage": "¿Estás seguro? El código QR anterior dejará de ser válido.",
+    "shareTitle": "Compartir mi QR de Emergencia",
+    "shareMessage": "Este es el enlace a mi perfil de emergencia: {{url}}",
+    "offlineTitle": "QR de Emergencia (Offline)",
+    "offlineInfo": "Estás sin conexión. Mostrando tu último código QR guardado."
+  },
+  "common": {
+    "retry": "Reintentar",
+    "download": "Descargar",
+    "regenerate": "Regenerar",
+    "cancel": "Cancelar",
+    "share": "Compartir",
+    "delete": "Eliminar",
+    "optional": "Opcional",
+    "save": "Guardar",
+    "loading": "Cargando...",
+    "edit": "Editar",
+    "add": "Agregar",
+    "notes": "Notas"
+  },
+  "addresses": {
+    "title": "Mis Direcciones",
+    "add": "Añadir Dirección",
+    "noAddresses": "Aún no has añadido ninguna dirección.",
+    "deleteConfirmTitle": "Eliminar Dirección",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar esta dirección? Esta acción no se puede deshacer."
+  },
+  "addressForm": {
+    "createTitle": "Nueva Dirección",
+    "editTitle": "Editar Dirección",
+    "streetLabel": "Calle y Número",
+    "streetPlaceholder": "Ej: Av. Principal 123",
+    "cityLabel": "Ciudad",
+    "cityPlaceholder": "Ej: Ciudad de México",
+    "stateLabel": "Estado / Provincia",
+    "statePlaceholder": "Ej: CDMX",
+    "countryLabel": "País",
+    "countryPlaceholder": "Ej: México",
+    "postalCodeLabel": "Código Postal",
+    "postalCodePlaceholder": "Ej: 06500",
+    "saveButton": "Guardar Dirección",
+    "successAdd": "¡Dirección añadida con éxito!",
+    "successEdit": "¡Dirección actualizada con éxito!"
+  },
+  "contacts": {
+    "title": "Contactos de Emergencia",
+    "add": "Añadir Contacto",
+    "noContacts": "Aún no has añadido ningún contacto de emergencia.",
+    "deleteConfirmTitle": "Eliminar Contacto",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar este contacto? Esta acción no se puede deshacer.",
+    "isEmergencyContact": "Contacto de Emergencia",
+    "isNotEmergencyContact": "No es un contacto de emergencia"
+  },
+  "contactForm": {
+    "createTitle": "Nuevo Contacto",
+    "editTitle": "Editar Contacto",
+    "nameLabel": "Nombre Completo",
+    "namePlaceholder": "Ej: Ana Pérez",
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "Ej: ana.perez@example.com",
+    "phoneLabel": "Número de Teléfono",
+    "phonePlaceholder": "Ej: +52 55 1234 5678",
+    "relationshipLabel": "Parentesco",
+    "relationshipPlaceholder": "Ej: Esposa, Médico, Hermano",
+    "saveButton": "Guardar Contacto",
+    "successAdd": "¡Contacto añadido con éxito!",
+    "successEdit": "¡Contacto actualizado con éxito!",
+    "isEmergencyContactLabel": "Marcar como Contacto de Emergencia"
+  },
+  "emergency_data": {
+    "title": "Datos de Emergencia",
+    "birth_date": "Fecha de Nacimiento",
+    "birth_date_placeholder": "AAAA-MM-DD",
+    "address": "Dirección Principal",
+    "address_placeholder": "Calle, Ciudad, País",
+    "blood_type": "Tipo de Sangre",
+    "blood_type_placeholder": "Ej: O+, A-",
+    "allergies": "Alergias Conocidas",
+    "allergies_placeholder": "Lista de alergias conocidas (Ej: Penicilina, Cacahuates)",
+    "diseases": "Enfermedades / Condiciones Crónicas",
+    "diseases_placeholder": "Lista de condiciones relevantes (Ej: Hipertensión, Diabetes)",
+    "medications": "Medicamentos Actuales",
+    "medications_placeholder": "Lista de medicamentos y dosis actuales",
+    "sshs": "Seguro Social / Sistema de Salud",
+    "sshs_placeholder": "Ej: IMSS, Seguro Privado",
+    "save_success": "¡Datos de emergencia guardados con éxito!",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar tus datos de emergencia? Esta acción no se puede deshacer.",
+    "delete_success": "¡Datos de emergencia eliminados con éxito!",
+    "blood_type_dialog_title": "Selecciona tu tipo de sangre",
+    "allergies_dialog_title": "Selecciona tus alergias",
+    "diseases_dialog_title": "Selecciona tus enfermedades",
+    "medications_dialog_title": "Selecciona tus medicamentos"
+  },
+  "allergy": {
+    "title": "Alergias",
+    "add": "Añadir Alergia",
+    "edit": "Editar Alergia",
+    "allergen": "Alérgeno",
+    "severityLabel": "Severidad",
+    "reactionType": "Tipo de Reacción",
+    "saving": "Guardando...",
+    "deleteTitle": "Eliminar Alergia",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar esta alergia?",
+    "list.empty": "Aún no has registrado ninguna alergia.",
+    "severity": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "critical": "Crítica"
+    },
+    "validation": {
+      "allergenRequired": "El nombre del alérgeno es obligatorio"
+    }
+  },
+  "disease": {
+    "title": "Condiciones Médicas",
+    "description": "Gestiona tus condiciones diagnosticadas",
+    "add": "Añadir Condición",
+    "edit": "Editar Condición",
+    "nameLabel": "Nombre de la Condición",
+    "searchPlaceholder": "Busca una condición...",
+    "diagnosed_at_label": "Fecha de Diagnóstico",
+    "diagnosed_at": "Diagnosticado: {{date}}",
+    "severityLabel": "Severidad",
+    "severityPlaceholder": "Ej: Leve, Moderada, Severa",
+    "notesPlaceholder": "Añade notas relevantes...",
+    "status": {
+      "active": "Activa",
+      "inactive": "Inactiva"
+    },
+    "showInEmergency": {
+      "show": "Visible en perfil de emergencia",
+      "hide": "Oculto en perfil de emergencia"
+    },
+    "severity": {
+      "mild": "Leve",
+      "moderate": "Moderada",
+      "severe": "Severa"
+    },
+    "validation": {
+      "uuidRequired": "Se debe seleccionar una enfermedad.",
+      "dateRequired": "La fecha de diagnóstico es obligatoria."
+    },
+    "successAdd": "Condición añadida correctamente.",
+    "successEdit": "Condición actualizada correctamente.",
+    "successDelete": "Condición eliminada.",
+    "deleteConfirmTitle": "Eliminar Condición",
+    "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar '{{name}}'?",
+    "list.empty": "Aún no tienes condiciones médicas registradas."
+  },
+  "vital_sign": {
+    "title": "Signos Vitales",
+    "description": "Gestiona tus signos vitales",
+    "add": "Añadir Signo Vital",
+    "edit": "Editar Signo Vital",
+    "typeLabel": "Tipo de Signo Vital",
+    "typePlaceholder": "Selecciona un tipo",
+    "valueLabel": "Valor",
+    "valuePlaceholder": "Ej: 120",
+    "secondaryValueLabel": "Valor Secundario (Diastólica)",
+    "secondaryValuePlaceholder": "Ej: 80",
+    "unitLabel": "Unidad",
+    "unitPlaceholder": "Ej: mmHg, kg, °C",
+    "measuredAtLabel": "Fecha y Hora de Medición",
+    "notesPlaceholder": "Añade notas relevantes...",
+    "list.empty": "Aún no tienes signos vitales registrados.",
+    "deleteTitle": "Eliminar Signo Vital",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este registro?",
+    "successAdd": "Signo vital añadido correctamente.",
+    "successEdit": "Signo vital actualizado correctamente.",
+    "successDelete": "Signo vital eliminado.",
+    "chart": {
+      "min": "Min",
+      "max": "Max",
+      "average": "Media",
+      "latest": "Último"
+    },
+    "widget.title": "Últimos Signos Vitales",
+    "viewAsTable": "Ver como tabla",
+    "viewAsChart": "Ver como gráfico",
+    "table": {
+      "measuredAt": "Fecha",
+      "value": "Valor",
+      "unit": "Unidad"
+    },
+    "types": {
+      "blood_pressure": "Presión Arterial",
+      "heart_rate": "Frecuencia Cardíaca",
+      "temperature": "Temperatura",
+      "weight": "Peso"
+    }
+  },
+  "medical_history": {
+    "title": "Historial Médico",
+    "add_event": "Añadir Evento",
+    "edit_event": "Editar Evento",
+    "attach_files": "Adjuntar Archivos",
+    "no_events": "No se encontraron eventos médicos.",
+    "save_success": "Evento guardado con éxito.",
+    "delete_success": "Evento eliminado con éxito.",
+    "error_fetching": "No se pudo cargar el historial médico.",
+    "error_saving": "No se pudo guardar el evento.",
+    "event_types": {
+      "surgery": "Cirugía",
+      "imaging": "Estudio de Imagen",
+      "lab": "Análisis de Laboratorio",
+      "treatment": "Tratamiento",
+      "appointment": "Cita Médica",
+      "cosmetic": "Procedimiento Estético",
+      "other": "Otro"
+    },
+    "form": {
+      "title_label": "Título del Evento",
+      "type_label": "Tipo de Evento",
+      "date_label": "Fecha del Evento",
+      "description_label": "Descripción (Opcional)",
+      "location_label": "Lugar / Clínica (Opcional)",
+      "doctor_name_label": "Nombre del Médico (Opcional)"
+    },
+    "validation": {
+      "title_required": "El título debe tener al menos 3 caracteres.",
+      "type_required": "Debe seleccionar un tipo de evento.",
+      "date_required": "La fecha del evento es obligatoria."
+    }
+  },
+  "medication": {
+    "title": "Medicamentos",
+    "add_medication": "Añadir Medicamento",
+    "no_schedules_found": "No se encontraron planes de medicación. ¡Añade el primero!",
+    "dosage": "Dosis",
+    "frequency": "Frecuencia",
+    "reminders_at": "Recordatorios a las",
+    "frequency_options": {
+      "daily": "Diaria",
+      "weekly": "Semanal",
+      "custom": "Personalizada"
+    },
+    "form": {
+      "name_label": "Nombre del Medicamento",
+      "dosage_label": "Dosis (ej: 1 pastilla, 10mg)",
+      "frequency_label": "Frecuencia",
+      "start_date_label": "Fecha de Inicio",
+      "end_date_label": "Fecha de Fin (Opcional)",
+      "reminders_label": "Horas de Recordatorio",
+      "add_time": "Añadir Hora"
+    },
+    "validation": {
+      "name_required": "El nombre del medicamento es obligatorio.",
+      "dosage_required": "La dosis es obligatoria.",
+      "time_slot_required": "Debes añadir al menos una hora de recordatorio."
+    }
+  }
+}

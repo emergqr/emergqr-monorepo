@@ -1,0 +1,4131 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EmergQR",
+    "description": "Backend for Frontend para la aplicación móvil EmergQR.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Registrar un nuevo cliente",
+        "description": "Registra un nuevo cliente y devuelve un token de acceso.\n\nAdemás del email y la contraseña, opcionalmente se pueden enviar datos\npersonales como nombre, teléfono, fecha de nacimiento y el idioma preferido\npara completar el perfil desde el inicio.\n\nSi el email ya existe, el servicio lanzará una `ConflictException`.",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClientRegister" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenWithClient" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Iniciar sesión y obtener token JWT",
+        "description": "Auténtica a un cliente y devuelve un token de acceso JWT.\nSi las credenciales son incorrectas, el servicio lanzará una\nAuthenticationException que será manejada por el handler global.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClientLogin" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenWithClient" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Cambiar la contraseña del cliente autenticado",
+        "description": "Permite a un cliente autenticado cambiar su propia contraseña.\nSi la contraseña antigua es incorrecta, el servicio lanzará una\nAuthenticationException.",
+        "operationId": "change_password_api_v1_auth_change_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Solicitar restablecimiento de contraseña",
+        "description": "Inicia el proceso de restablecimiento de contraseña.\nPor seguridad, este endpoint siempre devuelve una respuesta exitosa.",
+        "operationId": "request_password_reset_api_v1_auth_reset_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResetPasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clients/me": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Obtener perfil del cliente actual",
+        "description": "Devuelve los datos básicos del perfil del cliente actualmente autenticado.",
+        "operationId": "read_current_client_api_v1_clients_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Client" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "put": {
+        "tags": ["Clients"],
+        "summary": "Actualizar perfil del cliente actual",
+        "description": "Actualiza el perfil del cliente autenticado. Permite modificar datos personales como:\n\n    - `name`\n    - `phone`\n    - `birth_date` (fecha de nacimiento)\n    - `sex` (sexo)\n    - `occupation` (ocupación)\n    - `preferred_language` (idioma preferido, ej: 'es', 'en')\n\n    También permite actualizar la dirección y los datos de emergencia asociados en la misma petición.",
+        "operationId": "update_current_client_api_v1_clients_me_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClientUpdate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Client" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "delete": {
+        "tags": ["Clients"],
+        "summary": "Desactivar la cuenta del cliente actual",
+        "description": "Realiza una eliminación lógica (soft delete) de la cuenta del cliente autenticado. El usuario no podrá iniciar sesión.",
+        "operationId": "delete_current_client_api_v1_clients_me_delete",
+        "responses": { "204": { "description": "Successful Response" } },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/clients/me/profile": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Obtener perfil completo y datos relacionados del cliente",
+        "description": "Obtiene el perfil del cliente junto con sus relaciones directas: dirección, datos de emergencia y lista de contactos.",
+        "operationId": "read_full_client_profile_api_v1_clients_me_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClientFullProfile" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/clients/me/avatar": {
+      "post": {
+        "tags": ["Clients"],
+        "summary": "Subir o actualizar el avatar del cliente",
+        "description": "Sube o actualiza la foto de perfil (avatar) del cliente autenticado. El archivo debe ser una imagen válida (jpg, png) y no exceder el tamaño máximo configurado.",
+        "operationId": "upload_avatar_api_v1_clients_me_avatar_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_avatar_api_v1_clients_me_avatar_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Client" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/clients/{client_uuid}/contacts": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Listar los contactos activos de un cliente",
+        "description": "Obtiene una lista paginada de los contactos ACTIVOS de un cliente específico.\n\n    - **Admins**: Pueden ver los contactos de cualquier cliente.\n    - **Usuarios**: Solo pueden ver sus propios contactos.",
+        "operationId": "read_contacts_for_a_specific_client_api_v1_clients__client_uuid__contacts_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "client_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Client Uuid"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ContactRead" },
+                  "title": "Response Read Contacts For A Specific Client Api V1 Clients  Client Uuid  Contacts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clients/{client_uuid}/admin-status": {
+      "put": {
+        "tags": ["Clients"],
+        "summary": "Actualizar estado de administrador de un cliente (Solo Admins)",
+        "description": "Establece o revoca los privilegios de administrador para un cliente. La autorización es manejada por la dependencia `get_current_admin_user`.",
+        "operationId": "set_client_admin_status_api_v1_clients__client_uuid__admin_status_put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "client_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Client Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClientAdminUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Client" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/": {
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Añadir un nuevo contacto a la lista del cliente",
+        "description": "Crea un nuevo contacto y lo asocia al cliente autenticado.\n\n- **Recibe**: Un objeto JSON con los datos del contacto. Se puede incluir `is_emergency_contact: true` para marcarlo como tal desde su creación.\n- **Devuelve**: El objeto del contacto recién creado, incluyendo su estado de emergencia.\n- **Lanza 409 Conflict**: Si el cliente ya tiene un contacto con el mismo email o teléfono.",
+        "operationId": "add_contact_to_client_api_v1_contacts__post",
+        "security": [{ "HTTPBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Listar los contactos del cliente actual",
+        "description": "Obtiene una lista paginada de los contactos ACTIVOS del cliente autenticado.",
+        "operationId": "read_client_contacts_api_v1_contacts__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ContactRead" },
+                  "title": "Response Read Client Contacts Api V1 Contacts  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contacts/{contact_uuid}": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Obtener un contacto específico del cliente",
+        "description": "Obtiene la información de un contacto específico si pertenece al cliente.\n\n- **Devuelve**: El objeto del contacto.\n- **Lanza 404 Not Found**: Si el contacto no existe o no pertenece al cliente.",
+        "operationId": "read_client_contact_api_v1_contacts__contact_uuid__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "contact_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Contact Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Contacts"],
+        "summary": "Actualizar un contacto del cliente",
+        "description": "Actualiza la información de un contacto existente si pertenece al cliente.\n\n- **Permite** actualizar tanto los datos del contacto (nombre, email) como los datos de la relación (parentesco, si es de emergencia).\n- **Devuelve**: El objeto del contacto con la información actualizada, incluyendo el nuevo estado de emergencia si se modificó.\n- **Lanza 404 Not Found**: Si el contacto no existe o no pertenece al cliente.",
+        "operationId": "update_client_contact_api_v1_contacts__contact_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "contact_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Contact Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Contacts"],
+        "summary": "Eliminar un contacto de la lista del cliente",
+        "description": "Elimina la asociación de un contacto con el cliente autenticado (no borra el contacto globalmente).\n\n- **Devuelve**: 204 No Content si la operación es exitosa.\n- **Lanza 404 Not Found**: Si el contacto no está en la lista del cliente.",
+        "operationId": "delete_client_contact_api_v1_contacts__contact_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "contact_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Contact Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/addresses/": {
+      "get": {
+        "tags": ["Addresses"],
+        "summary": "Obtener mis direcciones",
+        "operationId": "get_my_addresses_api_v1_addresses__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "$ref": "#/components/schemas/AddressResponse" },
+                  "type": "array",
+                  "title": "Response Get My Addresses Api V1 Addresses  Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "post": {
+        "tags": ["Addresses"],
+        "summary": "Crear una nueva dirección para el cliente",
+        "operationId": "create_address_for_client_api_v1_addresses__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddressCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AddressResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/addresses/{address_uuid}": {
+      "put": {
+        "tags": ["Addresses"],
+        "summary": "Actualizar una dirección",
+        "operationId": "update_address_api_v1_addresses__address_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "address_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Address Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddressUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AddressResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Addresses"],
+        "summary": "Eliminar una dirección",
+        "operationId": "delete_address_api_v1_addresses__address_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "address_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Address Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/emerg-data/": {
+      "post": {
+        "tags": ["Emergency Data"],
+        "summary": "Crear datos de emergencia para el usuario actual",
+        "description": "Crea un nuevo registro de datos de emergencia asociado al cliente autenticado.",
+        "operationId": "create_emerg_data_api_v1_emerg_data__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmergDataCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmergDataResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/emerg-data/me": {
+      "get": {
+        "tags": ["Emergency Data"],
+        "summary": "Obtener mis datos de emergencia",
+        "description": "Obtiene los datos de emergencia del cliente autenticado.",
+        "operationId": "get_my_emerg_data_api_v1_emerg_data_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmergDataResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "put": {
+        "tags": ["Emergency Data"],
+        "summary": "Actualizar mis datos de emergencia",
+        "description": "Actualiza uno o más campos de los datos de emergencia del cliente autenticado.",
+        "operationId": "update_my_emerg_data_api_v1_emerg_data_me_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmergDataUpdate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmergDataResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "delete": {
+        "tags": ["Emergency Data"],
+        "summary": "Eliminar mis datos de emergencia",
+        "description": "Elimina el registro de datos de emergencia del cliente autenticado.",
+        "operationId": "delete_my_emerg_data_api_v1_emerg_data_me_delete",
+        "responses": { "204": { "description": "Successful Response" } },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/files/{virtual_path}": {
+      "get": {
+        "tags": ["Archivos"],
+        "summary": "Obtener un archivo estático",
+        "description": "Obtiene un archivo del almacenamiento a través de su ruta virtual.",
+        "operationId": "get_file_api_v1_files__virtual_path__get",
+        "parameters": [
+          {
+            "name": "virtual_path",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Virtual Path" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dicom/metadata": {
+      "post": {
+        "tags": ["DICOM"],
+        "summary": "Extraer metadatos de un archivo DICOM",
+        "description": "Extrae y devuelve los metadatos de un archivo DICOM.\n\n    - **Recibe**: Un archivo con formato DICOM (`.dcm`).\n    - **Devuelve**: Un diccionario JSON con sus metadatos principales, como el ID del paciente, la fecha del estudio, etc.\n    - **Lanza 400 Bad Request**: Si el archivo proporcionado no es un archivo DICOM válido o está corrupto.",
+        "operationId": "get_dicom_metadata_api_v1_dicom_metadata_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_get_dicom_metadata_api_v1_dicom_metadata_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Dicom Metadata Api V1 Dicom Metadata Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diseases/master-list": {
+      "get": {
+        "tags": ["Diseases"],
+        "summary": "Obtener lista maestra de enfermedades",
+        "description": "Obtiene una lista de todas las enfermedades disponibles en el sistema.\n    Es ideal para poblar selectores o campos de autocompletado en el frontend.\n\n    - **category**: Permite filtrar las enfermedades por categoría (ej: \"Cardiovascular\", \"Respiratorio\").",
+        "operationId": "get_diseases_master_list_api_v1_diseases_master_list_get",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filtrar por categoría de enfermedad",
+              "title": "Category"
+            },
+            "description": "Filtrar por categoría de enfermedad"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/DiseaseRead" },
+                  "title": "Response Get Diseases Master List Api V1 Diseases Master List Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diseases/categories": {
+      "get": {
+        "tags": ["Diseases"],
+        "summary": "Obtener todas las categorías de enfermedades",
+        "description": "Devuelve una lista de todas las categorías de enfermedades únicas disponibles en el sistema, ideal para poblar un selector en el frontend.",
+        "operationId": "get_disease_categories_api_v1_diseases_categories_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "type": "string" },
+                  "type": "array",
+                  "title": "Response Get Disease Categories Api V1 Diseases Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/diseases/from-code": {
+      "post": {
+        "tags": ["Diseases"],
+        "summary": "Añadir una enfermedad desde un código estandarizado",
+        "description": "Busca una enfermedad por su código externo (ej. de SNOMED).\n    Si no existe en la base de datos local, la crea.\n    Finalmente, la asocia al perfil del cliente autenticado.\n\n    Este es el endpoint ideal para usar después de que el usuario\n    selecciona un resultado de la búsqueda en `/medical-codes/search/{service_name}`.",
+        "operationId": "add_disease_from_code_api_v1_diseases_from_code_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DiseaseCreateFromCode" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PatientDiseaseRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/diseases/": {
+      "get": {
+        "tags": ["Diseases"],
+        "summary": "Listar mis enfermedades",
+        "description": "Obtiene una lista de todas las enfermedades asociadas al cliente autenticado.",
+        "operationId": "get_my_diseases_api_v1_diseases__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PatientDiseaseRead"
+                  },
+                  "type": "array",
+                  "title": "Response Get My Diseases Api V1 Diseases  Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      },
+      "post": {
+        "tags": ["Diseases"],
+        "summary": "Asociar una enfermedad al perfil del cliente",
+        "description": "Asocia una enfermedad existente al perfil del cliente autenticado.",
+        "operationId": "add_disease_to_client_api_v1_diseases__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PatientDiseaseCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PatientDiseaseRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/diseases/{association_uuid}": {
+      "put": {
+        "tags": ["Diseases"],
+        "summary": "Actualizar detalles de una enfermedad asociada",
+        "description": "Actualiza los detalles de una enfermedad ya asociada al perfil del cliente (fecha, severidad, etc.).",
+        "operationId": "update_patient_disease_api_v1_diseases__association_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "association_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Association Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PatientDiseaseUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PatientDiseaseRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Diseases"],
+        "summary": "Eliminar una enfermedad del perfil del cliente",
+        "description": "Elimina la asociación de una enfermedad del perfil del cliente.",
+        "operationId": "delete_patient_disease_api_v1_diseases__association_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "association_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Association Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/allergies/": {
+      "post": {
+        "tags": ["Allergies"],
+        "summary": "Añadir una nueva alergia al perfil del cliente",
+        "description": "Crea un nuevo registro de alergia para el cliente autenticado.",
+        "operationId": "create_allergy_api_v1_allergies__post",
+        "security": [{ "HTTPBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AllergyCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AllergyRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Allergies"],
+        "summary": "Listar mis alergias",
+        "description": "Obtiene una lista de todas las alergias registradas para el cliente autenticado.",
+        "operationId": "get_my_allergies_api_v1_allergies__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AllergyRead" },
+                  "title": "Response Get My Allergies Api V1 Allergies  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/allergies/from-code": {
+      "post": {
+        "tags": ["Allergies"],
+        "summary": "Añadir una alergia desde un código estandarizado",
+        "description": "Crea un registro de alergia a partir de un código obtenido de un servicio externo (ej. SNOMED).",
+        "operationId": "create_allergy_from_code_api_v1_allergies_from_code_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AllergyCreateFromCode" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AllergyRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/allergies/categories": {
+      "get": {
+        "tags": ["Allergies"],
+        "summary": "Obtener categorías sugeridas para alergias",
+        "description": "Devuelve una lista de categorías comunes de alergias para guiar la búsqueda del usuario en el frontend.",
+        "operationId": "get_allergy_categories_api_v1_allergies_categories_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "type": "string" },
+                  "type": "array",
+                  "title": "Response Get Allergy Categories Api V1 Allergies Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/allergies/{allergy_uuid}": {
+      "get": {
+        "tags": ["Allergies"],
+        "summary": "Obtener una alergia específica",
+        "description": "Obtiene los detalles de una alergia específica por su UUID.",
+        "operationId": "get_allergy_api_v1_allergies__allergy_uuid__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "allergy_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Allergy Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AllergyRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Allergies"],
+        "summary": "Actualizar una alergia",
+        "description": "Actualiza los datos de una alergia existente.",
+        "operationId": "update_allergy_api_v1_allergies__allergy_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "allergy_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Allergy Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AllergyUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AllergyRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Allergies"],
+        "summary": "Eliminar una alergia",
+        "description": "Elimina un registro de alergia del perfil del cliente.",
+        "operationId": "delete_allergy_api_v1_allergies__allergy_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "allergy_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Allergy Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/allergies/{allergy_uuid}/reactions": {
+      "post": {
+        "tags": ["Allergies"],
+        "summary": "Añadir un historial de reacción a una alergia",
+        "description": "Añade un nuevo registro de reacción a una de las alergias del cliente.",
+        "operationId": "add_reaction_history_api_v1_allergies__allergy_uuid__reactions_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "allergy_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Allergy Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReactionHistoryCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AllergyRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/public-profile/{client_uuid}": {
+      "get": {
+        "tags": ["Public Profile API"],
+        "summary": "Obtener el perfil público de emergencia de un cliente",
+        "description": "Este endpoint no requiere autenticación y devuelve los datos públicos de un cliente para ser mostrados en una situación de emergencia.",
+        "operationId": "get_public_profile_api_v1_public_profile__client_uuid__get",
+        "parameters": [
+          {
+            "name": "client_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Client Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/profile/{client_uuid}": {
+      "get": {
+        "tags": ["Public Profile View"],
+        "summary": "Visualizar el perfil público de emergencia (HTML)",
+        "description": "Este endpoint devuelve una página HTML pre-formateada con los datos de emergencia del cliente, ideal para ser mostrada en un navegador.",
+        "operationId": "view_public_profile_api_v1_view_profile__client_uuid__get",
+        "parameters": [
+          {
+            "name": "client_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Client Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "text/html": { "schema": { "type": "string" } } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-history/timeline": {
+      "get": {
+        "tags": ["Medical History"],
+        "summary": "Obtener la línea de tiempo unificada del historial médico",
+        "description": "Devuelve una lista cronológica completa de todos los registros médicos del cliente:\n    - Enfermedades diagnosticadas\n    - Eventos médicos (cirugías, citas, etc.)\n    - Alergias registradas\n    - Planes de medicación iniciados",
+        "operationId": "get_unified_timeline_api_v1_medical_history_timeline_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "$ref": "#/components/schemas/TimelineItemRead" },
+                  "type": "array",
+                  "title": "Response Get Unified Timeline Api V1 Medical History Timeline Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/medical-history/upcoming-reminders": {
+      "get": {
+        "tags": ["Medical History"],
+        "summary": "Obtener próximos recordatorios (citas y medicamentos)",
+        "description": "Devuelve una lista unificada y ordenada de los próximos eventos médicos\n    y tomas de medicación para los siguientes días.\n    Ideal para una pantalla de \"Próximos Eventos\" o un sistema de notificaciones.",
+        "operationId": "get_upcoming_reminders_api_v1_medical_history_upcoming_reminders_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "days_ahead",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 30,
+              "minimum": 1,
+              "description": "Número de días hacia adelante para buscar recordatorios.",
+              "default": 7,
+              "title": "Days Ahead"
+            },
+            "description": "Número de días hacia adelante para buscar recordatorios."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpcomingReminderRead"
+                  },
+                  "title": "Response Get Upcoming Reminders Api V1 Medical History Upcoming Reminders Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-history/events": {
+      "post": {
+        "tags": ["Medical History"],
+        "summary": "Añadir un nuevo evento al historial clínico",
+        "description": "Crea un nuevo evento médico (cirugía, estudio, etc.) para el cliente autenticado.",
+        "operationId": "create_medical_event_api_v1_medical_history_events_post",
+        "security": [{ "HTTPBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MedicalEventCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MedicalEventRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Medical History"],
+        "summary": "Obtener el historial clínico del cliente (línea de tiempo)",
+        "description": "Obtiene una lista cronológica de todos los eventos médicos del cliente.",
+        "operationId": "get_medical_history_api_v1_medical_history_events_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MedicalEventRead" },
+                  "title": "Response Get Medical History Api V1 Medical History Events Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-history/events/{event_uuid}": {
+      "get": {
+        "tags": ["Medical History"],
+        "summary": "Obtener un evento médico específico",
+        "description": "Obtiene los detalles de un evento médico por su UUID.",
+        "operationId": "get_medical_event_api_v1_medical_history_events__event_uuid__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "event_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MedicalEventRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Medical History"],
+        "summary": "Actualizar un evento médico",
+        "description": "Actualiza los datos de un evento médico existente.",
+        "operationId": "update_medical_event_api_v1_medical_history_events__event_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "event_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MedicalEventUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MedicalEventRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Medical History"],
+        "summary": "Eliminar un evento médico",
+        "description": "Elimina un evento médico del historial del cliente.",
+        "operationId": "delete_medical_event_api_v1_medical_history_events__event_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "event_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-history/schedules": {
+      "post": {
+        "tags": ["Medical History"],
+        "summary": "Crear un nuevo plan de medicación",
+        "description": "Crea un nuevo recordatorio de medicación para el cliente.",
+        "operationId": "create_medication_schedule_api_v1_medical_history_schedules_post",
+        "security": [{ "HTTPBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicationScheduleCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicationScheduleRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Medical History"],
+        "summary": "Listar los planes de medicación del cliente",
+        "description": "Obtiene una lista de todos los planes de medicación (recordatorios) del cliente.",
+        "operationId": "get_medication_schedules_api_v1_medical_history_schedules_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicationScheduleRead"
+                  },
+                  "title": "Response Get Medication Schedules Api V1 Medical History Schedules Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-codes/search/{service_name}": {
+      "get": {
+        "tags": ["Medical Codes"],
+        "summary": "Buscar terminología médica en un servicio externo",
+        "description": "Realiza una búsqueda en una API externa de terminología médica.\n\n    - **service_name**: El servicio a consultar. Soportados: `icd11`, `snomed`, `openfda`.\n    - **term**: El término de búsqueda (ej: \"penicillin allergy\", \"diabetes\").\n    - **lang**: El idioma para la búsqueda (ej: \"en\", \"es\").",
+        "operationId": "search_medical_term_api_v1_medical_codes_search__service_name__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "service_name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Service Name" }
+          },
+          {
+            "name": "term",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "description": "Término a buscar",
+              "title": "Term"
+            },
+            "description": "Término a buscar"
+          },
+          {
+            "name": "accept-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Accept-Language"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "object", "additionalProperties": true },
+                  "title": "Response Search Medical Term Api V1 Medical Codes Search  Service Name  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/summary": {
+      "get": {
+        "tags": ["Analytics"],
+        "summary": "Obtener un resumen de estadísticas de salud",
+        "description": "Devuelve un resumen con contadores clave del historial médico del usuario.",
+        "operationId": "get_health_summary_api_v1_analytics_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Health Summary Api V1 Analytics Summary Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/push-notifications/register": {
+      "post": {
+        "tags": ["Push Notifications"],
+        "summary": "Registrar un dispositivo para notificaciones push",
+        "description": "La app móvil debe llamar a este endpoint después del login para registrar el dispositivo.",
+        "operationId": "register_device_for_push_api_v1_push_notifications_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushNotificationTokenCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/push-notifications/unregister": {
+      "delete": {
+        "tags": ["Push Notifications"],
+        "summary": "Eliminar el registro de un dispositivo para notificaciones push",
+        "description": "La app móvil debe llamar a este endpoint durante el logout.",
+        "operationId": "unregister_device_for_push_api_v1_push_notifications_unregister_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_unregister_device_for_push_api_v1_push_notifications_unregister_delete"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/v1/vital-signs/types": {
+      "get": {
+        "tags": ["Vital Signs"],
+        "summary": "Get Available Vital Sign Types (Translated)",
+        "description": "Returns a list of all vital sign types supported by the system, ideal for populating a selector in the frontend.\n    The list is automatically translated to the language specified in the `Accept-Language` header (e.g., 'en', 'fr').\n    If the header is not provided, it defaults to English. The canonical source language is English.",
+        "operationId": "get_vital_sign_types_api_v1_vital_signs_types_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "Accept-Language"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "title": "Response Get Vital Sign Types Api V1 Vital Signs Types Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vital-signs/": {
+      "post": {
+        "tags": ["Vital Signs"],
+        "summary": "Add a New Vital Sign Record",
+        "description": "Creates a new vital sign record for the authenticated client.",
+        "operationId": "create_vital_sign_api_v1_vital_signs__post",
+        "security": [{ "HTTPBearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VitalSignCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VitalSignRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Vital Signs"],
+        "summary": "List My Vital Signs",
+        "description": "Gets a paginated list of all the client's vital signs, ordered by measurement date descending.",
+        "operationId": "get_my_vital_signs_api_v1_vital_signs__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "title": "Skip" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 100, "title": "Limit" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/VitalSignRead" },
+                  "title": "Response Get My Vital Signs Api V1 Vital Signs  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vital-signs/{vital_sign_uuid}": {
+      "get": {
+        "tags": ["Vital Signs"],
+        "summary": "Get a Specific Vital Sign Record",
+        "description": "Gets the details of a vital sign record by its UUID, if it belongs to the client.",
+        "operationId": "get_vital_sign_api_v1_vital_signs__vital_sign_uuid__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "vital_sign_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Vital Sign Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VitalSignRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Vital Signs"],
+        "summary": "Update a Vital Sign Record",
+        "description": "Updates an existing vital sign record.",
+        "operationId": "update_vital_sign_api_v1_vital_signs__vital_sign_uuid__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "vital_sign_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Vital Sign Uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VitalSignUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VitalSignRead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Vital Signs"],
+        "summary": "Delete a Vital Sign Record",
+        "description": "Deletes a vital sign record from the client's profile.",
+        "operationId": "delete_vital_sign_api_v1_vital_signs__vital_sign_uuid__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "vital_sign_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Vital Sign Uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/avatars/generate": {
+      "get": {
+        "tags": ["Avatars"],
+        "summary": "Generar un avatar con iniciales dinámicamente",
+        "description": "Genera una imagen de avatar en formato PNG a partir de un nombre.\n    Si no se proporciona un nombre, genera un avatar con un signo de interrogación.\n    Este endpoint es ideal para usar como fallback cuando un usuario no ha subido una foto de perfil.",
+        "operationId": "generate_avatar_from_name_api_v1_avatars_generate_get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Nombre completo del usuario para generar las iniciales.",
+              "default": "?",
+              "title": "Name"
+            },
+            "description": "Nombre completo del usuario para generar las iniciales."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avatar generado exitosamente.",
+            "content": { "application/json": { "schema": {} }, "image/png": {} }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/avatars/default": {
+      "get": {
+        "tags": ["Avatars"],
+        "summary": "Obtener un avatar de silueta genérico",
+        "description": "Devuelve una imagen PNG de una silueta de usuario genérica.\n    Este endpoint sirve como el último recurso cuando no se puede generar\n    un avatar a partir de las iniciales del usuario.",
+        "operationId": "get_default_avatar_api_v1_avatars_default_get",
+        "responses": {
+          "200": {
+            "description": "Icono genérico generado exitosamente.",
+            "content": { "application/json": { "schema": {} }, "image/png": {} }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Root",
+        "description": "Endpoint de bienvenida que muestra información básica del servicio.",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressCreate": {
+        "properties": {
+          "street": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Street",
+            "description": "Calle y número"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "City",
+            "description": "Ciudad"
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "State",
+            "description": "Estado o Provincia"
+          },
+          "postal_code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Postal Code",
+            "description": "Código Postal"
+          },
+          "country": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Country",
+            "description": "País"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "description": "Indica si es la dirección principal",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["street", "city", "state", "postal_code", "country"],
+        "title": "AddressCreate"
+      },
+      "AddressRead": {
+        "properties": {
+          "street": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Street",
+            "description": "Calle y número"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "City",
+            "description": "Ciudad"
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "State",
+            "description": "Estado o Provincia"
+          },
+          "postal_code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Postal Code",
+            "description": "Código Postal"
+          },
+          "country": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Country",
+            "description": "País"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "description": "Indica si es la dirección principal",
+            "default": false
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" }
+        },
+        "type": "object",
+        "required": [
+          "street",
+          "city",
+          "state",
+          "postal_code",
+          "country",
+          "uuid"
+        ],
+        "title": "AddressRead"
+      },
+      "AddressResponse": {
+        "properties": {
+          "street": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Street",
+            "description": "Calle y número"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "City",
+            "description": "Ciudad"
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "State",
+            "description": "Estado o Provincia"
+          },
+          "postal_code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Postal Code",
+            "description": "Código Postal"
+          },
+          "country": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Country",
+            "description": "País"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "description": "Indica si es la dirección principal",
+            "default": false
+          },
+          "id": { "type": "integer", "title": "Id" },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" }
+        },
+        "type": "object",
+        "required": [
+          "street",
+          "city",
+          "state",
+          "postal_code",
+          "country",
+          "id",
+          "uuid"
+        ],
+        "title": "AddressResponse"
+      },
+      "AddressUpdate": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              { "type": "string", "maxLength": 255 },
+              { "type": "null" }
+            ],
+            "title": "Street"
+          },
+          "city": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "City"
+          },
+          "state": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "State"
+          },
+          "postal_code": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Postal Code"
+          },
+          "country": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Country"
+          }
+        },
+        "type": "object",
+        "title": "AddressUpdate"
+      },
+      "AllergyCreate": {
+        "properties": {
+          "allergen": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Allergen"
+          },
+          "reaction_type": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Reaction Type"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "acute_treatment": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Acute Treatment"
+          },
+          "diagnosis_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Diagnosis Date"
+          },
+          "show_in_emergency": {
+            "type": "boolean",
+            "title": "Show In Emergency",
+            "default": true
+          },
+          "source_api": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Source Api"
+          },
+          "source_code": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Source Code"
+          }
+        },
+        "type": "object",
+        "required": ["allergen"],
+        "title": "AllergyCreate"
+      },
+      "AllergyCreateFromCode": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Nombre/descripción de la alergia, ej: 'Alergia a la penicilina'"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "El código del término, ej: '91936005'"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "El servicio de origen del código, ej: 'snomed'"
+          }
+        },
+        "type": "object",
+        "required": ["name", "code", "source"],
+        "title": "AllergyCreateFromCode",
+        "description": "Schema para crear una alergia a partir de un código de un servicio externo."
+      },
+      "AllergyRead": {
+        "properties": {
+          "allergen": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Allergen"
+          },
+          "reaction_type": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Reaction Type"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "acute_treatment": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Acute Treatment"
+          },
+          "diagnosis_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Diagnosis Date"
+          },
+          "show_in_emergency": {
+            "type": "boolean",
+            "title": "Show In Emergency",
+            "default": true
+          },
+          "source_api": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Source Api"
+          },
+          "source_code": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Source Code"
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "reaction_history": {
+            "items": { "$ref": "#/components/schemas/ReactionHistoryRead" },
+            "type": "array",
+            "title": "Reaction History",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": ["allergen", "uuid"],
+        "title": "AllergyRead"
+      },
+      "AllergyUpdate": {
+        "properties": {
+          "allergen": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Allergen"
+          },
+          "reaction_type": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Reaction Type"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "acute_treatment": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Acute Treatment"
+          },
+          "diagnosis_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Diagnosis Date"
+          },
+          "show_in_emergency": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Show In Emergency"
+          }
+        },
+        "type": "object",
+        "title": "AllergyUpdate"
+      },
+      "Body_get_dicom_metadata_api_v1_dicom_metadata_post": {
+        "properties": {
+          "file": { "type": "string", "format": "binary", "title": "File" }
+        },
+        "type": "object",
+        "required": ["file"],
+        "title": "Body_get_dicom_metadata_api_v1_dicom_metadata_post"
+      },
+      "Body_unregister_device_for_push_api_v1_push_notifications_unregister_delete": {
+        "properties": {
+          "device_token": {
+            "type": "string",
+            "title": "Device Token",
+            "description": "El token del dispositivo a eliminar."
+          }
+        },
+        "type": "object",
+        "required": ["device_token"],
+        "title": "Body_unregister_device_for_push_api_v1_push_notifications_unregister_delete"
+      },
+      "Body_upload_avatar_api_v1_clients_me_avatar_post": {
+        "properties": {
+          "file": { "type": "string", "format": "binary", "title": "File" }
+        },
+        "type": "object",
+        "required": ["file"],
+        "title": "Body_upload_avatar_api_v1_clients_me_avatar_post"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "old_password": { "type": "string", "title": "Old Password" },
+          "new_password": { "type": "string", "title": "New Password" },
+          "new_passwordRepeat": {
+            "type": "string",
+            "title": "New Passwordrepeat"
+          }
+        },
+        "type": "object",
+        "required": ["old_password", "new_password", "new_passwordRepeat"],
+        "title": "ChangePasswordRequest",
+        "description": "Esquema para que un usuario autenticado cambie su contraseña."
+      },
+      "Client": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Birth Date"
+          },
+          "preferred_language": {
+            "anyOf": [
+              { "type": "string", "maxLength": 10 },
+              { "type": "null" }
+            ],
+            "title": "Preferred Language",
+            "description": "Idioma preferido del usuario (ej. 'en', 'es')",
+            "default": "en"
+          },
+          "sex": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Sex"
+          },
+          "occupation": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Occupation"
+          },
+          "avatar_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Avatar Url"
+          },
+          "is_active": { "type": "boolean", "title": "Is Active" },
+          "is_admin": { "type": "boolean", "title": "Is Admin" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "full_avatar_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Full Avatar Url",
+            "description": "Genera una URL pública y completa para la foto de perfil.\n\n- Si el usuario ha subido un avatar, devuelve la URL a ese archivo.\n- Si no hay avatar pero sí un nombre, devuelve una URL al generador\n  dinámico de avatares con sus iniciales.\n- Si no hay ni avatar ni nombre, devuelve None.",
+            "readOnly": true
+          },
+          "age": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Age",
+            "description": "Calcula la edad del cliente a partir de su fecha de nacimiento.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "uuid",
+          "email",
+          "is_active",
+          "is_admin",
+          "created_at",
+          "full_avatar_url",
+          "age"
+        ],
+        "title": "Client",
+        "description": "Esquema de respuesta para un Cliente, excluyendo datos sensibles como la contraseña."
+      },
+      "ClientAdminUpdate": {
+        "properties": {
+          "is_admin": { "type": "boolean", "title": "Is Admin" }
+        },
+        "type": "object",
+        "required": ["is_admin"],
+        "title": "ClientAdminUpdate",
+        "description": "Esquema para que un administrador actualice el estado de otro cliente."
+      },
+      "ClientFullProfile": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Birth Date"
+          },
+          "preferred_language": {
+            "anyOf": [
+              { "type": "string", "maxLength": 10 },
+              { "type": "null" }
+            ],
+            "title": "Preferred Language",
+            "description": "Idioma preferido del usuario (ej. 'en', 'es')",
+            "default": "en"
+          },
+          "sex": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Sex"
+          },
+          "occupation": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Occupation"
+          },
+          "avatar_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Avatar Url"
+          },
+          "is_active": { "type": "boolean", "title": "Is Active" },
+          "is_admin": { "type": "boolean", "title": "Is Admin" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "address": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/AddressRead" },
+              { "type": "null" }
+            ]
+          },
+          "emerg_data": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/EmergDataResponse" },
+              { "type": "null" }
+            ]
+          },
+          "contact_associations": {
+            "items": { "$ref": "#/components/schemas/ContactRead" },
+            "type": "array",
+            "title": "Contact Associations",
+            "default": []
+          },
+          "allergies": {
+            "items": { "$ref": "#/components/schemas/AllergyRead" },
+            "type": "array",
+            "title": "Allergies",
+            "default": []
+          },
+          "patient_diseases": {
+            "items": { "$ref": "#/components/schemas/PatientDiseaseRead" },
+            "type": "array",
+            "title": "Patient Diseases",
+            "default": []
+          },
+          "full_avatar_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Full Avatar Url",
+            "description": "Genera una URL pública y completa para la foto de perfil.\n\n- Si el usuario ha subido un avatar, devuelve la URL a ese archivo.\n- Si no hay avatar pero sí un nombre, devuelve una URL al generador\n  dinámico de avatares con sus iniciales.\n- Si no hay ni avatar ni nombre, devuelve None.",
+            "readOnly": true
+          },
+          "age": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Age",
+            "description": "Calcula la edad del cliente a partir de su fecha de nacimiento.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "uuid",
+          "email",
+          "is_active",
+          "is_admin",
+          "created_at",
+          "full_avatar_url",
+          "age"
+        ],
+        "title": "ClientFullProfile",
+        "description": "Esquema de respuesta enriquecido que incluye los datos relacionados\ndel cliente, como su dirección, datos de emergencia y contactos."
+      },
+      "ClientLogin": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "password": { "type": "string", "title": "Password" }
+        },
+        "type": "object",
+        "required": ["email", "password"],
+        "title": "ClientLogin",
+        "description": "Esquema para el inicio de sesión de un cliente."
+      },
+      "ClientRegister": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "password": { "type": "string", "title": "Password" },
+          "passwordRepeat": { "type": "string", "title": "Passwordrepeat" },
+          "name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Birth Date"
+          },
+          "sex": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Sex"
+          },
+          "occupation": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Occupation"
+          },
+          "preferred_language": {
+            "type": "string",
+            "title": "Preferred Language",
+            "description": "Idioma preferido del usuario (ej: 'en', 'es')",
+            "default": "en"
+          }
+        },
+        "type": "object",
+        "required": ["email", "password", "passwordRepeat"],
+        "title": "ClientRegister",
+        "description": "Esquema para el registro de un nuevo cliente."
+      },
+      "ClientUpdate": {
+        "properties": {
+          "email": {
+            "anyOf": [
+              { "type": "string", "format": "email" },
+              { "type": "null" }
+            ],
+            "title": "Email"
+          },
+          "name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100, "minLength": 2 },
+              { "type": "null" }
+            ],
+            "title": "Name"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 3,
+                "pattern": "^[a-zA-Z0-9_.-]+$"
+              },
+              { "type": "null" }
+            ],
+            "title": "Username",
+            "description": "Nombre de usuario del cliente, debe ser único y alfanumérico"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 25,
+                "minLength": 7,
+                "pattern": "^\\+?[\\d\\s\\-()]+$"
+              },
+              { "type": "null" }
+            ],
+            "title": "Phone",
+            "description": "Número de teléfono del contacto"
+          },
+          "birth_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Birth Date"
+          },
+          "sex": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Sex"
+          },
+          "occupation": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Occupation"
+          },
+          "address": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/AddressCreate" },
+              { "type": "null" }
+            ],
+            "description": "Datos de la dirección a crear o actualizar. Se deben enviar todos los campos de la dirección."
+          },
+          "emerg_data": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/EmergDataUpdate" },
+              { "type": "null" }
+            ],
+            "description": "Datos de emergencia a crear o actualizar."
+          },
+          "preferred_language": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Preferred Language",
+            "description": "Idioma preferido del usuario (ej: 'en', 'es')"
+          }
+        },
+        "type": "object",
+        "title": "ClientUpdate",
+        "description": "Esquema para que un cliente actualice su propio perfil.\nPermite actualizar datos del perfil, la dirección y los datos de emergencia."
+      },
+      "ContactCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Name",
+            "description": "Nombre completo del contacto"
+          },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "phone": {
+            "type": "string",
+            "maxLength": 25,
+            "minLength": 7,
+            "pattern": "^\\+?[\\d\\s\\-()]+$",
+            "title": "Phone",
+            "description": "Número de teléfono del contacto"
+          },
+          "relationship_type": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Relationship Type",
+            "description": "Ej: Familiar, Amigo, Médico"
+          },
+          "is_emergency_contact": {
+            "type": "boolean",
+            "title": "Is Emergency Contact",
+            "description": "Indica si es un contacto de emergencia",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["name", "email", "phone", "relationship_type"],
+        "title": "ContactCreate",
+        "description": "Schema para crear un nuevo contacto y asociarlo a un cliente."
+      },
+      "ContactRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Name",
+            "description": "Nombre completo del contacto"
+          },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "phone": {
+            "type": "string",
+            "maxLength": 25,
+            "minLength": 7,
+            "pattern": "^\\+?[\\d\\s\\-()]+$",
+            "title": "Phone",
+            "description": "Número de teléfono del contacto"
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "relationship_type": {
+            "type": "string",
+            "title": "Relationship Type"
+          },
+          "is_emergency_contact": {
+            "type": "boolean",
+            "title": "Is Emergency Contact"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "uuid",
+          "relationship_type",
+          "is_emergency_contact"
+        ],
+        "title": "ContactRead",
+        "description": "Schema para leer/devolver un contacto."
+      },
+      "ContactUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100, "minLength": 2 },
+              { "type": "null" }
+            ],
+            "title": "Name"
+          },
+          "email": {
+            "anyOf": [
+              { "type": "string", "format": "email" },
+              { "type": "null" }
+            ],
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 25,
+                "minLength": 7,
+                "pattern": "^\\+?[\\d\\s\\-()]+$"
+              },
+              { "type": "null" }
+            ],
+            "title": "Phone"
+          },
+          "relationship_type": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50, "minLength": 3 },
+              { "type": "null" }
+            ],
+            "title": "Relationship Type"
+          },
+          "is_emergency_contact": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Emergency Contact"
+          }
+        },
+        "type": "object",
+        "title": "ContactUpdate",
+        "description": "Schema para actualizar un contacto existente."
+      },
+      "DeviceType": {
+        "type": "string",
+        "enum": ["ios", "android"],
+        "title": "DeviceType"
+      },
+      "DiseaseCreateFromCode": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "El código del término, ej: '59621000'"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Nombre/descripción de la enfermedad, ej: 'Hipertensión esencial'"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "El servicio de origen del código, ej: 'snomed'"
+          },
+          "diagnosis_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Diagnosis Date"
+          },
+          "severity": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Severity"
+          },
+          "notes": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": ["code", "name", "source"],
+        "title": "DiseaseCreateFromCode",
+        "description": "Schema para asociar una enfermedad a un paciente a partir de un código externo."
+      },
+      "DiseaseRead": {
+        "properties": {
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "name": { "type": "string", "title": "Name" },
+          "icd10_code": { "type": "string", "title": "Icd10 Code" },
+          "snomed_ct_code": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Snomed Ct Code"
+          },
+          "category": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Category"
+          },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": ["uuid", "name", "icd10_code"],
+        "title": "DiseaseRead"
+      },
+      "EmergDataCreate": {
+        "properties": {
+          "bird_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Bird Date"
+          },
+          "direccion": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Direccion"
+          },
+          "blood": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Blood"
+          },
+          "diseases": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Diseases"
+          },
+          "allergies": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Allergies"
+          },
+          "medications": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Medications"
+          },
+          "social_security_health_system": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Social Security Health System"
+          }
+        },
+        "type": "object",
+        "title": "EmergDataCreate"
+      },
+      "EmergDataResponse": {
+        "properties": {
+          "bird_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Bird Date"
+          },
+          "direccion": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Direccion"
+          },
+          "blood": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Blood"
+          },
+          "diseases": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Diseases"
+          },
+          "allergies": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Allergies"
+          },
+          "medications": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Medications"
+          },
+          "social_security_health_system": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Social Security Health System"
+          }
+        },
+        "type": "object",
+        "title": "EmergDataResponse"
+      },
+      "EmergDataUpdate": {
+        "properties": {
+          "bird_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Bird Date"
+          },
+          "direccion": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Direccion"
+          },
+          "blood": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Blood"
+          },
+          "diseases": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Diseases"
+          },
+          "allergies": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Allergies"
+          },
+          "medications": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Medications"
+          },
+          "social_security_health_system": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Social Security Health System"
+          }
+        },
+        "type": "object",
+        "title": "EmergDataUpdate"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MedicalDocumentRead": {
+        "properties": {
+          "file_name": { "type": "string", "title": "File Name" },
+          "mime_type": { "type": "string", "title": "Mime Type" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "file_path": { "type": "string", "title": "File Path" },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Genera una URL pública y completa para acceder al documento.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": ["file_name", "mime_type", "uuid", "file_path", "url"],
+        "title": "MedicalDocumentRead"
+      },
+      "MedicalEventCreate": {
+        "properties": {
+          "event_type": { "$ref": "#/components/schemas/MedicalEventType" },
+          "title": { "type": "string", "maxLength": 150, "title": "Title" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          },
+          "event_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Event Date"
+          },
+          "location": {
+            "anyOf": [
+              { "type": "string", "maxLength": 150 },
+              { "type": "null" }
+            ],
+            "title": "Location"
+          },
+          "doctor_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Doctor Name"
+          },
+          "details": {
+            "anyOf": [
+              { "additionalProperties": true, "type": "object" },
+              { "type": "null" }
+            ],
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": ["event_type", "title", "event_date"],
+        "title": "MedicalEventCreate"
+      },
+      "MedicalEventRead": {
+        "properties": {
+          "event_type": { "$ref": "#/components/schemas/MedicalEventType" },
+          "title": { "type": "string", "maxLength": 150, "title": "Title" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          },
+          "event_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Event Date"
+          },
+          "location": {
+            "anyOf": [
+              { "type": "string", "maxLength": 150 },
+              { "type": "null" }
+            ],
+            "title": "Location"
+          },
+          "doctor_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Doctor Name"
+          },
+          "details": {
+            "anyOf": [
+              { "additionalProperties": true, "type": "object" },
+              { "type": "null" }
+            ],
+            "title": "Details"
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "documents": {
+            "items": { "$ref": "#/components/schemas/MedicalDocumentRead" },
+            "type": "array",
+            "title": "Documents",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": ["event_type", "title", "event_date", "uuid"],
+        "title": "MedicalEventRead"
+      },
+      "MedicalEventType": {
+        "type": "string",
+        "enum": [
+          "Cirugía",
+          "Estudio de Imagen",
+          "Análisis de Laboratorio",
+          "Tratamiento",
+          "Cita Médica",
+          "Procedimiento Estético",
+          "Otro"
+        ],
+        "title": "MedicalEventType",
+        "description": "Define los tipos de eventos médicos que se pueden registrar."
+      },
+      "MedicalEventUpdate": {
+        "properties": {
+          "event_type": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/MedicalEventType" },
+              { "type": "null" }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              { "type": "string", "maxLength": 150 },
+              { "type": "null" }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          },
+          "event_date": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Event Date"
+          },
+          "location": {
+            "anyOf": [
+              { "type": "string", "maxLength": 150 },
+              { "type": "null" }
+            ],
+            "title": "Location"
+          },
+          "doctor_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Doctor Name"
+          },
+          "details": {
+            "anyOf": [
+              { "additionalProperties": true, "type": "object" },
+              { "type": "null" }
+            ],
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "title": "MedicalEventUpdate"
+      },
+      "MedicationScheduleCreate": {
+        "properties": {
+          "medication_name": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Medication Name"
+          },
+          "dosage": { "type": "string", "maxLength": 50, "title": "Dosage" },
+          "frequency_type": {
+            "type": "string",
+            "enum": [
+              "Diario",
+              "Cada X horas",
+              "Semanal",
+              "Mensual",
+              "Según necesidad"
+            ],
+            "title": "Frequency Type"
+          },
+          "time_of_day": {
+            "anyOf": [
+              { "type": "string", "format": "time" },
+              { "type": "null" }
+            ],
+            "title": "Time Of Day"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date",
+            "description": "Fecha de inicio del tratamiento"
+          },
+          "end_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "End Date",
+            "description": "Fecha de fin del tratamiento (opcional)"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": ["medication_name", "dosage", "frequency_type"],
+        "title": "MedicationScheduleCreate"
+      },
+      "MedicationScheduleRead": {
+        "properties": {
+          "medication_name": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Medication Name"
+          },
+          "dosage": { "type": "string", "maxLength": 50, "title": "Dosage" },
+          "frequency_type": {
+            "type": "string",
+            "enum": [
+              "Diario",
+              "Cada X horas",
+              "Semanal",
+              "Mensual",
+              "Según necesidad"
+            ],
+            "title": "Frequency Type"
+          },
+          "time_of_day": {
+            "anyOf": [
+              { "type": "string", "format": "time" },
+              { "type": "null" }
+            ],
+            "title": "Time Of Day"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date",
+            "description": "Fecha de inicio del tratamiento"
+          },
+          "end_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "End Date",
+            "description": "Fecha de fin del tratamiento (opcional)"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" }
+        },
+        "type": "object",
+        "required": ["medication_name", "dosage", "frequency_type", "uuid"],
+        "title": "MedicationScheduleRead"
+      },
+      "PatientDiseaseCreate": {
+        "properties": {
+          "diagnosis_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Diagnosis Date"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "notes": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Notes"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "disease_uuid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Disease Uuid"
+          }
+        },
+        "type": "object",
+        "required": ["diagnosis_date", "disease_uuid"],
+        "title": "PatientDiseaseCreate",
+        "description": "Schema para asociar una enfermedad existente a un paciente."
+      },
+      "PatientDiseaseRead": {
+        "properties": {
+          "diagnosis_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Diagnosis Date"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "notes": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Notes"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "disease": { "$ref": "#/components/schemas/DiseaseRead" }
+        },
+        "type": "object",
+        "required": ["diagnosis_date", "uuid", "disease"],
+        "title": "PatientDiseaseRead",
+        "description": "Schema de respuesta que combina los datos de la asociación\ncon los datos de la enfermedad en sí."
+      },
+      "PatientDiseaseUpdate": {
+        "properties": {
+          "diagnosis_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Diagnosis Date"
+          },
+          "severity": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Severity"
+          },
+          "notes": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Notes"
+          },
+          "is_active": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "title": "PatientDiseaseUpdate",
+        "description": "Schema para actualizar los detalles de la asociación."
+      },
+      "PublicClientProfile": {
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Name"
+          },
+          "phone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              { "type": "string", "format": "date" },
+              { "type": "null" }
+            ],
+            "title": "Birth Date"
+          },
+          "preferred_language": {
+            "anyOf": [
+              { "type": "string", "maxLength": 10 },
+              { "type": "null" }
+            ],
+            "title": "Preferred Language",
+            "description": "Idioma preferido del usuario (ej. 'en', 'es')",
+            "default": "en"
+          },
+          "sex": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Sex"
+          },
+          "occupation": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Occupation"
+          },
+          "avatar_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Avatar Url"
+          },
+          "is_active": { "type": "boolean", "title": "Is Active" },
+          "is_admin": { "type": "boolean", "title": "Is Admin" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "full_avatar_url": {
+            "type": "string",
+            "title": "Full Avatar Url",
+            "description": "Genera una URL de avatar robusta para el perfil público.\n\nLa lógica es la siguiente:\n1. Intenta obtener la URL del avatar que el usuario subió.\n2. Si no existe, intenta obtener la URL del avatar generado con sus iniciales.\n3. Como último recurso, si ninguno de los anteriores es posible,\n   devuelve la URL de la imagen estática por defecto ('gris.png').",
+            "readOnly": true
+          },
+          "age": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Age",
+            "description": "Calcula la edad del cliente a partir de su fecha de nacimiento.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "uuid",
+          "email",
+          "is_active",
+          "is_admin",
+          "created_at",
+          "full_avatar_url",
+          "age"
+        ],
+        "title": "PublicClientProfile",
+        "description": "Versión del perfil del cliente para la vista pública.\nSobrescribe el full_avatar_url para incluir una imagen por defecto."
+      },
+      "PublicProfileResponse": {
+        "properties": {
+          "client": { "$ref": "#/components/schemas/PublicClientProfile" },
+          "blood_type": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Blood Type",
+            "description": "Tipo de sangre del cliente"
+          },
+          "social_security_health_system": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Social Security Health System",
+            "description": "Sistema de salud o seguro"
+          },
+          "legacy_medications": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Legacy Medications",
+            "description": "Medicamentos actuales (texto libre, legado)"
+          },
+          "legacy_allergies": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Legacy Allergies",
+            "description": "Alergias conocidas (texto libre, legado)"
+          },
+          "legacy_diseases": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Legacy Diseases",
+            "description": "Enfermedades preexistentes (texto libre, legado)"
+          },
+          "emergency_contacts": {
+            "items": { "$ref": "#/components/schemas/ContactRead" },
+            "type": "array",
+            "title": "Emergency Contacts",
+            "default": []
+          },
+          "allergies": {
+            "items": { "$ref": "#/components/schemas/AllergyRead" },
+            "type": "array",
+            "title": "Allergies",
+            "default": []
+          },
+          "patient_diseases": {
+            "items": { "$ref": "#/components/schemas/PatientDiseaseRead" },
+            "type": "array",
+            "title": "Patient Diseases",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": ["client"],
+        "title": "PublicProfileResponse",
+        "description": "Schema de respuesta completo para el endpoint de perfil público."
+      },
+      "PushNotificationTokenCreate": {
+        "properties": {
+          "device_token": {
+            "type": "string",
+            "title": "Device Token",
+            "description": "El token de notificación único proporcionado por APNS o FCM."
+          },
+          "device_type": {
+            "$ref": "#/components/schemas/DeviceType",
+            "description": "El tipo de sistema operativo del dispositivo ('ios' o 'android')."
+          }
+        },
+        "type": "object",
+        "required": ["device_token", "device_type"],
+        "title": "PushNotificationTokenCreate"
+      },
+      "ReactionHistoryCreate": {
+        "properties": {
+          "reaction_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Reaction Date"
+          },
+          "symptoms": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Symptoms"
+          }
+        },
+        "type": "object",
+        "required": ["reaction_date"],
+        "title": "ReactionHistoryCreate"
+      },
+      "ReactionHistoryRead": {
+        "properties": {
+          "reaction_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Reaction Date"
+          },
+          "symptoms": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Symptoms"
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" }
+        },
+        "type": "object",
+        "required": ["reaction_date", "uuid"],
+        "title": "ReactionHistoryRead"
+      },
+      "ResetPasswordRequest": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" }
+        },
+        "type": "object",
+        "required": ["email"],
+        "title": "ResetPasswordRequest",
+        "description": "Esquema para solicitar un restablecimiento de contraseña (ej. enviar email)."
+      },
+      "TimelineItemRead": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["disease", "event", "allergy", "medication"],
+            "title": "Type"
+          },
+          "date": { "type": "string", "format": "date", "title": "Date" },
+          "title": { "type": "string", "title": "Title" },
+          "details": { "type": "string", "title": "Details" }
+        },
+        "type": "object",
+        "required": ["type", "date", "title", "details"],
+        "title": "TimelineItemRead",
+        "description": "Schema para un único item en la línea de tiempo unificada del paciente."
+      },
+      "TokenWithClient": {
+        "properties": {
+          "access_token": { "type": "string", "title": "Access Token" },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "client": { "$ref": "#/components/schemas/Client" }
+        },
+        "type": "object",
+        "required": ["access_token", "client"],
+        "title": "TokenWithClient",
+        "description": "Respuesta completa para login/registro. Incluye el token y el perfil del cliente."
+      },
+      "UpcomingReminderRead": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["appointment", "medication"],
+            "title": "Type"
+          },
+          "datetime": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Datetime"
+          },
+          "title": { "type": "string", "title": "Title" },
+          "details": { "type": "string", "title": "Details" },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" }
+        },
+        "type": "object",
+        "required": ["type", "datetime", "title", "details", "uuid"],
+        "title": "UpcomingReminderRead"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      },
+      "VitalSignCreate": {
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VitalSignType" },
+          "value_numeric": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Numeric",
+            "description": "Valor numérico principal (ej: 120 para sistólica, 95 para glucosa)"
+          },
+          "value_secondary": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Secondary",
+            "description": "Valor secundario (ej: diastólica en presión arterial)"
+          },
+          "value_text": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Value Text",
+            "description": "Valor compuesto como '120/80' si no se usan numéricos"
+          },
+          "unit": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Unit",
+            "description": "Unidad de medida (ej: mmHg, mg/dL, bpm)"
+          },
+          "measured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Measured At",
+            "description": "Fecha y hora de la medición. Por defecto: now."
+          },
+          "notes": {
+            "anyOf": [
+              { "type": "string", "maxLength": 500 },
+              { "type": "null" }
+            ],
+            "title": "Notes"
+          },
+          "device_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Device Name",
+            "description": "Nombre del dispositivo que tomó la medición (opcional)"
+          },
+          "is_manual": {
+            "type": "boolean",
+            "title": "Is Manual",
+            "description": "Indica si fue ingresado manualmente o desde un dispositivo",
+            "default": true
+          },
+          "show_in_emergency": {
+            "type": "boolean",
+            "title": "Show In Emergency",
+            "description": "El cliente decide si este dato es visible en el perfil público",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": ["type"],
+        "title": "VitalSignCreate",
+        "description": "Schema para crear un nuevo registro de signo vital. Hereda toda la lógica de VitalSignBase."
+      },
+      "VitalSignRead": {
+        "properties": {
+          "type": { "$ref": "#/components/schemas/VitalSignType" },
+          "value_numeric": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Numeric",
+            "description": "Valor numérico principal (ej: 120 para sistólica, 95 para glucosa)"
+          },
+          "value_secondary": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Secondary",
+            "description": "Valor secundario (ej: diastólica en presión arterial)"
+          },
+          "value_text": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Value Text",
+            "description": "Valor compuesto como '120/80' si no se usan numéricos"
+          },
+          "unit": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Unit",
+            "description": "Unidad de medida (ej: mmHg, mg/dL, bpm)"
+          },
+          "measured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Measured At",
+            "description": "Fecha y hora de la medición. Por defecto: now."
+          },
+          "notes": {
+            "anyOf": [
+              { "type": "string", "maxLength": 500 },
+              { "type": "null" }
+            ],
+            "title": "Notes"
+          },
+          "device_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Device Name",
+            "description": "Nombre del dispositivo que tomó la medición (opcional)"
+          },
+          "is_manual": {
+            "type": "boolean",
+            "title": "Is Manual",
+            "description": "Indica si fue ingresado manualmente o desde un dispositivo",
+            "default": true
+          },
+          "show_in_emergency": {
+            "type": "boolean",
+            "title": "Show In Emergency",
+            "description": "El cliente decide si este dato es visible en el perfil público",
+            "default": true
+          },
+          "uuid": { "type": "string", "format": "uuid", "title": "Uuid" },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": ["type", "uuid", "created_at"],
+        "title": "VitalSignRead",
+        "description": "Schema para devolver un registro de signo vital, incluyendo su UUID y fecha de creación."
+      },
+      "VitalSignType": {
+        "type": "string",
+        "enum": [
+          "Blood Pressure",
+          "Heart Rate",
+          "Blood Glucose",
+          "Body Temperature",
+          "Respiratory Rate",
+          "Oxygen Saturation",
+          "Weight",
+          "Height",
+          "Body Mass Index (BMI)",
+          "Other"
+        ],
+        "title": "VitalSignType",
+        "description": "Define los tipos de signos vitales que se pueden registrar."
+      },
+      "VitalSignUpdate": {
+        "properties": {
+          "type": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/VitalSignType" },
+              { "type": "null" }
+            ]
+          },
+          "value_numeric": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Numeric"
+          },
+          "value_secondary": {
+            "anyOf": [{ "type": "number" }, { "type": "null" }],
+            "title": "Value Secondary"
+          },
+          "value_text": {
+            "anyOf": [
+              { "type": "string", "maxLength": 50 },
+              { "type": "null" }
+            ],
+            "title": "Value Text"
+          },
+          "unit": {
+            "anyOf": [
+              { "type": "string", "maxLength": 20 },
+              { "type": "null" }
+            ],
+            "title": "Unit"
+          },
+          "measured_at": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Measured At"
+          },
+          "notes": {
+            "anyOf": [
+              { "type": "string", "maxLength": 500 },
+              { "type": "null" }
+            ],
+            "title": "Notes"
+          },
+          "device_name": {
+            "anyOf": [
+              { "type": "string", "maxLength": 100 },
+              { "type": "null" }
+            ],
+            "title": "Device Name"
+          },
+          "is_manual": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Manual"
+          },
+          "show_in_emergency": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Show In Emergency"
+          }
+        },
+        "type": "object",
+        "title": "VitalSignUpdate",
+        "description": "Schema para actualizar un registro de signo vital. Todos los campos son opcionales."
+      }
+    },
+    "securitySchemes": { "HTTPBearer": { "type": "http", "scheme": "bearer" } }
+  }
+}
